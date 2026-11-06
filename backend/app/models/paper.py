@@ -2,7 +2,12 @@
 from datetime import date, datetime
 
 from sqlalchemy import Date, DateTime, Integer, String, Text, func
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .paper_chunk import PaperChunk
 
 from app.database import Base
 
@@ -40,4 +45,9 @@ class Paper(Base):
 
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now()
+    )
+
+    chunks: Mapped[list["PaperChunk"]] = relationship(
+        back_populates="paper",
+        cascade="all, delete-orphan",
     )

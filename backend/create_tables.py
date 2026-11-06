@@ -1,5 +1,5 @@
 from app.database import Base, engine
-from app.models import Paper
+from app.models import Paper,PaperChunk
 
 Base.metadata.create_all(bind=engine)
 
