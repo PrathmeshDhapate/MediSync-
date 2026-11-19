@@ -1,6 +1,6 @@
-from app.services.retrieval import retrieve_hybrid_chunks
-from app.services.generation import generate_answer
+
 import re
+
 from app.services.retrieval import retrieve_hybrid_chunks
 from app.services.generation import (
     generate_answer,
@@ -43,10 +43,17 @@ def answer_question(question: str):
         "citation_validation": citation_validation,
     }
 
+
 def validate_citations(answer: str, citations: list[dict]):
-    used_citations = set(
-        re.findall(r"\[S\d+\]", answer)
-    )
+    matches = re.findall(r"\[S\d+(?:,\s*S\d+)*\]", answer)
+
+    used_citations = set()
+
+    for match in matches:
+        citation_ids = match.strip("[]").split(",")
+
+        for citation_id in citation_ids:
+            used_citations.add(f"[{citation_id.strip()}]")
 
     valid_citations = {
         f"[{citation['citation_id']}]"
